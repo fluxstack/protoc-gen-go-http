@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/go-chi/chi/v5"
+	"google.golang.org/grpc"
 	"io"
 	"log"
 	"net/http"
@@ -35,14 +37,24 @@ func main() {
 	// This converter converts the GreeterServer interface that created from the service in proto to http.HandlerFunc.
 	conv := NewGreeterHTTPConverter(srv)
 
+	router := chi.NewRouter()
 	// Register SayHello HandlerFunc to the server.
 	// If you do not need a callback, pass nil as argument.
-	http.Handle("/sayhello", conv.SayHello(logCallback))
+	router.Handle("/sayhello", conv.SayHello(logCallback))
 	// If you want to create a path from Proto's service name and method name, use the SayHelloWithName method.
 	// In this case, the strings 'Greeter' and 'SayHello' are returned.
-	http.Handle(restPath(conv.SayHelloWithName(logCallback)))
+	router.Handle(restPath(conv.SayHelloWithName(logCallback)))
+	//http.Handle(conv.SayHelloWithName(logCallback))
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	httpRule := &MessagingHTTPConverter{srv: &messagingServer{}}
+	mount(router, httpRule.CreateMessageHTTPRule)
+
+	log.Fatal(http.ListenAndServe(":8081", router))
+}
+
+func mount(router chi.Router, h func(func(ctx context.Context, w http.ResponseWriter, r *http.Request, arg, ret proto.Message, err error), ...grpc.UnaryServerInterceptor) (string, string, http.HandlerFunc)) {
+	method, pattern, handler := h(logCallback)
+	router.Method(method, pattern, handler)
 }
 
 // logCallback is called when exiting ServeHTTP
@@ -75,3 +87,33 @@ func logCallback(ctx context.Context, w http.ResponseWriter, r *http.Request, ar
 func restPath(service, method string, hf http.HandlerFunc) (string, http.HandlerFunc) {
 	return fmt.Sprintf("/%s/%s", strings.ToLower(service), strings.ToLower(method)), hf
 }
+
+type messagingServer struct {
+}
+
+func (s *messagingServer) GetMessage(ctx context.Context, request *GetMessageRequest) (*GetMessageResponse, error) {
+	return &GetMessageResponse{
+		MessageId: "",
+		Message:   "",
+		Tags:      nil,
+	}, nil
+}
+
+func (s *messagingServer) UpdateMessage(ctx context.Context, request *UpdateMessageRequest) (*UpdateMessageResponse, error) {
+	return &UpdateMessageResponse{
+		MessageId: "",
+		Sub:       nil,
+		Message:   "",
+	}, nil
+}
+
+func (s *messagingServer) CreateMessage(ctx context.Context, request *CreateMessageRequest) (*CreateMessageResponse, error) {
+	ret := &CreateMessageResponse{
+		MessageId: request.MessageId,
+		Sub:       request.Sub,
+		Opt:       request.Opt,
+	}
+	return ret, nil
+}
+
+var _ MessagingHTTPService = new(messagingServer)
