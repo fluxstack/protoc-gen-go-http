@@ -21,7 +21,7 @@ func init() {
 }
 
 func TestGolden(t *testing.T) {
-	workdir, err := ioutil.TempDir("", "protoc-gen-gohttp-test")
+	workdir, err := ioutil.TempDir("", "protoc-gen-go-http-test")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,9 +42,9 @@ func TestGolden(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Compile each package, using this binary as protoc-gen-gohttp.
+	// Compile each package, using this binary as protoc-gen-go-http.
 	for _, sources := range packages {
-		args := []string{"-Itestdata", "--gohttp_out=" + workdir}
+		args := []string{"-Itestdata", "--go-http_out=" + workdir}
 		args = append(args, sources...)
 		protoc(t, args)
 	}
@@ -91,7 +91,7 @@ func TestGolden(t *testing.T) {
 }
 
 func protoc(t *testing.T, args []string) {
-	cmd := exec.Command("protoc", "--plugin=protoc-gen-gohttp="+os.Args[0])
+	cmd := exec.Command("protoc", "--plugin=protoc-gen-go-http="+os.Args[0])
 	cmd.Args = append(cmd.Args, args...)
 	// We set the RUN_AS_PROTOC_GEN_GO environment variable to indicate that
 	// the subprocess should act as a proto compiler rather than a test.

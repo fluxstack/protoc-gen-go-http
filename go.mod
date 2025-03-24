@@ -1,10 +1,12 @@
-module github.com/nametake/protoc-gen-gohttp
+module github.com/fluxstack/protoc-gen-go-http
 
 require (
-	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
-	github.com/golang/protobuf v1.4.2 // indirect
-	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
-	google.golang.org/protobuf v1.25.0
+	google.golang.org/genproto/googleapis/api v0.0.0-20250227231956-55c901821b1e
+	google.golang.org/protobuf v1.36.5
 )
 
-go 1.13
+require github.com/google/go-cmp v0.6.0 // indirect
+
+go 1.23.0
+
+toolchain go1.24.1

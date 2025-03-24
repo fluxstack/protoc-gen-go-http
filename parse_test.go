@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
-
-	"github.com/golang/glog"
 )
 
 func TestTokenize(t *testing.T) {
@@ -315,6 +313,6 @@ func TestParseSegmentsWithErrors(t *testing.T) {
 			t.Errorf("parser{%q}.segments() succeeded; want InvalidTemplateError; accepted %#v", spec.tokens, segs)
 			continue
 		}
-		glog.V(1).Info(err)
+		t.Log(err)
 	}
 }

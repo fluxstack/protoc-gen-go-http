@@ -1,4 +1,4 @@
-module github.com/nametake/protoc-gen-gohttp/_examples
+module github.com/fluxstack/protoc-gen-go-http/_examples
 
 go 1.17
 

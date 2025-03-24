@@ -1,6 +1,6 @@
 # protoc-gen-gohttp
 
-[![CircleCI](https://circleci.com/gh/nametake/protoc-gen-gohttp.svg?style=svg)](https://circleci.com/gh/nametake/protoc-gen-gohttp)
+[![CircleCI](https://circleci.com/gh/fluxstack/protoc-gen-go-http.svg?style=svg)](https://circleci.com/gh/fluxstack/protoc-gen-go-http)
 
 protoc-gen-gohttp is a plugin of protoc that for using a `service` of Protocol Buffers as http.Handler definition.
 
@@ -21,7 +21,7 @@ The converted http.Handler checks Content-Type Header, and changes Marshal/Unmar
 ## Install
 
 ```console
-go get -u github.com/nametake/protoc-gen-gohttp
+go get -u github.com/fluxstack/protoc-gen-go-http
 ```
 
 And install dependent tools. (e.g. macOS)
